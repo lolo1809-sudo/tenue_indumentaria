@@ -119,7 +119,7 @@ export default function Login() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full font-bold rounded-custom px-4 py-3 mt-4 bg-accent hover:bg-accent-hover text-white transition-colors disabled:opacity-50 cursor-pointer"
+              className="w-full font-bold rounded-custom px-4 py-3 mt-4 bg-accent hover:bg-accent-hover text-bg-custom transition-colors disabled:opacity-50 cursor-pointer"
             >
               {loading ? "Procesando..." : "Ingresar al Panel"}
             </button>
