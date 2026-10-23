@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { CATEGORIAS, supabase } from "../config";
+import imageCompression from "browser-image-compression";
 
 const ESTADO_INICIAL = {
   nombre: "",
@@ -109,11 +110,32 @@ export default function Admin() {
 
       let urlsFinales = Array.isArray(form.imgs) ? [...form.imgs] : [];
 
+      // Subimos las imágenes comprimiéndolas y en formato .webp
       if (archivosSeleccionados.length > 0) {
         for (const archivo of archivosSeleccionados) {
-          const nombreArchivo = `${user.id}/${Date.now()}-${Math.random().toString(36).substring(2, 7)}-${archivo.name}`;
+          // Configuramos la compresión
+          const opcionesCompresion = {
+            maxSizeMB: 0.15,
+            maxWidthOrHeight: 1080,
+            useWebWorker: true,
+            fileType: "image/webp",
+          };
 
-          const { error: errorUpload } = await supabase.storage.from("productos-imagenes").upload(nombreArchivo, archivo);
+          let archivoComprimido = archivo;
+          let nombreOriginalSinExtension = archivo.name.split(".")[0];
+
+          try {
+            // Comprimimos la imagen
+            archivoComprimido = await imageCompression(archivo, opcionesCompresion);
+          } catch (errorCompresion) {
+            console.error("Error al comprimir, se usará la original:", errorCompresion);
+          }
+
+          // Generamos el nombre asegurando la extensión .webp
+          const nombreArchivo = `${user.id}/${Date.now()}-${Math.random().toString(36).substring(2, 7)}-${nombreOriginalSinExtension}.webp`;
+
+          // Subimos el archivo comprimido a Supabase
+          const { error: errorUpload } = await supabase.storage.from("productos-imagenes").upload(nombreArchivo, archivoComprimido);
 
           if (errorUpload) throw errorUpload;
 
@@ -314,15 +336,15 @@ export default function Admin() {
             {/* Selector de Imágenes */}
             <div>
               <label className="block text-text-secondary font-semibold mb-1">Imágenes del Producto</label>
-<input
-  ref={fileInputRef}
-  type="file"
-  accept="image/*"
-  multiple
-  onChange={handleFilesChange}
-  className="w-full bg-bg-custom border border-border text-text-primary rounded-custom px-3 py-2 outline-none focus:border-accent text-xs file:mr-4 file:py-1 file:px-3 file:rounded-custom file:border-0 file:text-xs file:font-semibold file:bg-accent file:text-bg-custom hover:file:bg-accent-hover cursor-pointer"
-/>
-              
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={handleFilesChange}
+                className="w-full bg-bg-custom border border-border text-text-primary rounded-custom px-3 py-2 outline-none focus:border-accent text-xs file:mr-4 file:py-1 file:px-3 file:rounded-custom file:border-0 file:text-xs file:font-semibold file:bg-accent file:text-bg-custom hover:file:bg-accent-hover cursor-pointer"
+              />
+
               {archivosSeleccionados.length > 0 && <p className="text-xs text-text-secondary mt-1">{archivosSeleccionados.length} nueva(s) imagen(es) seleccionada(s).</p>}
 
               {form.imgs && form.imgs.length > 0 && (
@@ -366,13 +388,13 @@ export default function Admin() {
             </div>
 
             <div className="flex gap-2 mt-4">
-<button
-  type="submit"
-  disabled={procesando}
-  className="flex-1 bg-accent hover:bg-accent-hover text-bg-custom font-bold py-2.5 rounded-custom transition-colors cursor-pointer disabled:opacity-50"
->
-  {procesando ? "Subiendo imágenes..." : editandoId ? "Actualizar" : "Crear"}
-</button>
+              <button
+                type="submit"
+                disabled={procesando}
+                className="flex-1 bg-accent hover:bg-accent-hover text-bg-custom font-bold py-2.5 rounded-custom transition-colors cursor-pointer disabled:opacity-50"
+              >
+                {procesando ? "Subiendo imágenes..." : editandoId ? "Actualizar" : "Crear"}
+              </button>
 
               {editandoId && (
                 <button

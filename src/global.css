@@ -1,28 +1,23 @@
-/* El @import de la tipografía se hace SIEMPRE antes del @import de tailwindcss */
-@import url("https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap");
 @import "tailwindcss";
 
-/* PALETA DE COLORES  */
+/* PALETA DE COLORES - Dark Minimal */
 @theme {
-  /* Fondos  */
-  --color-bg-custom: #ffffff;
-  --color-bg-secondary: #f4fbf4;
-  --color-bg-card: #ffffff;
-  --color-border: #d4e7d4;
+  /* Fondos */
+  --color-bg-custom: #0a0a0a;
+  --color-bg-secondary: #121212;
+  --color-bg-card: #171717;
+  --color-border: #262626;
 
-  /* Textos  */
-  --color-text-primary: #111818;
-  --color-text-secondary: #4b5555;
+  /* Textos */
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #a3a3a3;
 
-  /* Acentos  */
-  --color-accent: #84cc16;
-  --color-accent-hover: #65a30d;
+  /* Acentos */
+  --color-accent: #ffffff;
+  --color-accent-hover: #e5e5e5;
 
   /* Otros */
   --radius-custom: 8px;
-
-  /* Tipografía */
-  --font-guy: "Luckiest Guy", sans-serif;
 }
 
 * {
