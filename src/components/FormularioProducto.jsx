@@ -1,26 +1,24 @@
 import { useState } from "react";
+import { toast } from "sonner";
 
 export default function FormularioProducto({ onSubmit, onCancel }) {
   const [nombre, setNombre] = useState("");
   const [metodoEnvio, setMetodoEnvio] = useState("retiro");
   const [ubicacion, setUbicacion] = useState("");
-  const [error, setError] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
     // Validaciones
     if (!nombre.trim()) {
-      setError("Por favor, ingresá tu nombre y apellido.");
+      toast.error("Por favor, ingresá tu nombre y apellido.");
       return;
     }
 
     if (metodoEnvio === "envio" && !ubicacion.trim()) {
-      setError("Por favor, ingresá tu dirección para el envío.");
+      toast.error("Por favor, ingresá tu dirección para el envío.");
       return;
     }
-
-    setError("");
 
     // Enviar datos al componente padre (CarritoProductos.jsx)
     onSubmit({
@@ -33,8 +31,6 @@ export default function FormularioProducto({ onSubmit, onCancel }) {
   return (
     <form onSubmit={handleSubmit} className="bg-bg-secondary p-6 md:p-8 rounded-custom border border-border">
       <h3 className="text-xl font-bold mb-6 text-text-primary">Datos de entrega</h3>
-
-      {error && <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-custom text-sm font-semibold">{error}</div>}
 
       {/* Nombre y Apellido */}
       <div className="mb-6">

@@ -14,7 +14,7 @@ import LayoutPublico from "./components/LayoutPublico";
 import Inicio from "./pages/Inicio";
 import Login from "./pages/Login";
 import CategoryPage from "./pages/CategoryPage";
-import Admin from "./pages/Admin";
+import Admin from "./pages/Admin/Admin";
 import ProductDetail from "./pages/ProductDetail";
 import NotFound from "./pages/NotFound";
 import CarritoProductos from "./pages/CarritoProductos";

@@ -1,3 +1,5 @@
+/* El @import de la tipografía va SIEMPRE antes que el @import de tailwindcss*/
+@import url("https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&display=swap");
 @import "tailwindcss";
 
 /* PALETA DE COLORES - Dark Minimal */
@@ -18,6 +20,9 @@
 
   /* Otros */
   --radius-custom: 8px;
+
+  /* Tipografía del Header.jsx */
+  --font-sans: "Josefin Sans", sans-serif;
 }
 
 * {
