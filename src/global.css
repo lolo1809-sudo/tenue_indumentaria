@@ -2,26 +2,26 @@
 @import url("https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&display=swap");
 @import "tailwindcss";
 
-/* PALETA DE COLORES - Dark Minimal */
+/* PALETA DE COLORES */
 @theme {
   /* Fondos */
-  --color-bg-custom: #0a0a0a;
-  --color-bg-secondary: #121212;
-  --color-bg-card: #171717;
-  --color-border: #262626;
+  --color-bg-custom: #080808;
+  --color-bg-secondary: #0f0f0f;
+  --color-bg-card: #141414;
+  --color-border: #222222;
 
   /* Textos */
   --color-text-primary: #ffffff;
   --color-text-secondary: #a3a3a3;
 
-  /* Acentos */
-  --color-accent: #ffffff;
-  --color-accent-hover: #e5e5e5;
+  /* Acentos (Amarillo / Acetato) */
+  --color-accent: #ccff00;
+  --color-accent-hover: #b3e600;
 
   /* Otros */
   --radius-custom: 8px;
 
-  /* Tipografía del Header.jsx */
+  /* Tipografía del H1 del Header.jsx */
   --font-sans: "Josefin Sans", sans-serif;
 }
 

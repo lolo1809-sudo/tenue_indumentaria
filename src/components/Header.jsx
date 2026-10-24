@@ -40,7 +40,7 @@ export default function Header() {
         {/* Ícono de Carrito más grande (alineado a la derecha) */}
         <div className="md:absolute md:right-0 flex items-center">
           <Link to="/carrito" aria-label="Ver carrito de compras" className="p-1.5 text-text-primary hover:text-accent transition-colors duration-200 cursor-pointer">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor" className="w-9 h-9">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor" className="w-8 h-8">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
