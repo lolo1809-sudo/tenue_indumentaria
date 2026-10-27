@@ -14,10 +14,15 @@ import LayoutPublico from "./components/LayoutPublico";
 import Inicio from "./pages/Inicio";
 import Login from "./pages/Login";
 import CategoryPage from "./pages/CategoryPage";
-import Admin from "./pages/Admin/Admin";
 import ProductDetail from "./pages/ProductDetail";
 import NotFound from "./pages/NotFound";
 import CarritoProductos from "./pages/CarritoProductos";
+
+// Admin
+import Admin from "./pages/Admin/Admin";
+import AdminStock from "./pages/Admin/Stock/AdminStock";
+import AdminLocal from "./pages/Admin/InfoLocal/AdminLocal";
+import AdminComentarios from "./pages/Admin/Comentarios/AdminComentarios";
 
 export default function App() {
   const [local, setLocal] = useState(null);
@@ -91,6 +96,9 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route element={<RutaProtegida />}>
           <Route path="/admin" element={<Admin />} />
+          <Route path="/admin/stock" element={<AdminStock />} />
+          <Route path="/admin/local" element={<AdminLocal />} />
+          <Route path="/admin/comentarios" element={<AdminComentarios />} />
         </Route>
 
         {/* Rutas públicas, se muestra el Footer.jsx */}

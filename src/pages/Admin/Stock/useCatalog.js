@@ -1,10 +1,11 @@
-// Este archivo se encarga de centralizar todos los estados, efectos y funciones (la lógica pesada).
+// Este archivo se encarga de centralizar todos los estados, efectos y funciones (la lógica pesada) del apartado de Stock.
 
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { CATEGORIAS, supabase } from "../../config";
+import { CATEGORIAS, supabase } from "../../../config";
 import imageCompression from "browser-image-compression";
+import { getAuthenticatedLocalId } from "../adminUtils";
 
 const ESTADO_INICIAL = {
   nombre: "",
@@ -16,7 +17,7 @@ const ESTADO_INICIAL = {
   talles: "",
 };
 
-export function useAdminCatalog() {
+export function useCatalog() {
   const [productos, setProductos] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [procesando, setProcesando] = useState(false);
@@ -34,31 +35,18 @@ export function useAdminCatalog() {
 
   const obtenerProductos = async () => {
     setCargando(true);
+    try {
+      const { localId } = await getAuthenticatedLocalId();
 
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) {
-      setCargando(false);
-      return;
-    }
+      const { data, error } = await supabase.from("productos").select("*").eq("local_id", localId).order("id", { ascending: false });
 
-    const { data: localData, error: localError } = await supabase.from("locales").select("id").eq("user_id", user.id).single();
-
-    if (localError || !localData) {
-      toast.error("No se encontró un local asociado a este usuario.");
-      setCargando(false);
-      return;
-    }
-
-    const { data, error } = await supabase.from("productos").select("*").eq("local_id", localData.id).order("id", { ascending: false });
-
-    if (error) {
-      toast.error("Error al cargar productos: " + error.message);
-    } else {
+      if (error) throw error;
       setProductos(data || []);
+    } catch (error) {
+      toast.error("Error al cargar productos: " + error.message);
+    } finally {
+      setCargando(false);
     }
-    setCargando(false);
   };
 
   const handleChange = (e) => {
@@ -99,26 +87,15 @@ export function useAdminCatalog() {
     setProcesando(true);
 
     try {
-      const {
-        data: { user },
-        error: userError,
-      } = await supabase.auth.getUser();
-
-      if (userError || !user) throw new Error("No hay una sesión activa.");
-
-      const { data: localData, error: localError } = await supabase.from("locales").select("id").eq("user_id", user.id).single();
-
-      if (localError || !localData) throw new Error("No se pudo identificar el local del usuario.");
+      const { userId, localId } = await getAuthenticatedLocalId();
 
       let urlsFinales = Array.isArray(form.imgs) ? [...form.imgs] : [];
 
-      // Subimos las imágenes comprimiéndolas y en formato .webp
       if (archivosSeleccionados.length > 0) {
         for (const archivo of archivosSeleccionados) {
-          // Configuramos la compresión
           const opcionesCompresion = {
-            maxSizeMB: 0.15,
-            maxWidthOrHeight: 1080,
+            maxSizeMB: 0.12,
+            maxWidthOrHeight: 850,
             useWebWorker: true,
             fileType: "image/webp",
           };
@@ -127,22 +104,17 @@ export function useAdminCatalog() {
           let nombreOriginalSinExtension = archivo.name.split(".")[0];
 
           try {
-            // Comprimimos la imagen
             archivoComprimido = await imageCompression(archivo, opcionesCompresion);
           } catch (errorCompresion) {
             console.error("Error al comprimir, se usará la original:", errorCompresion);
           }
 
-          // Generamos el nombre asegurando la extensión .webp
-          const nombreArchivo = `${user.id}/${Date.now()}-${Math.random().toString(36).substring(2, 7)}-${nombreOriginalSinExtension}.webp`;
+          const nombreArchivo = `${userId}/${Date.now()}-${Math.random().toString(36).substring(2, 7)}-${nombreOriginalSinExtension}.webp`;
 
-          // Subimos el archivo comprimido a Supabase
           const { error: errorUpload } = await supabase.storage.from("productos-imagenes").upload(nombreArchivo, archivoComprimido);
-
           if (errorUpload) throw errorUpload;
 
           const { data: urlData } = supabase.storage.from("productos-imagenes").getPublicUrl(nombreArchivo);
-
           urlsFinales.push(urlData.publicUrl);
         }
       }
@@ -159,17 +131,14 @@ export function useAdminCatalog() {
         ...form,
         imgs: urlsFinales,
         talles: tallesArray,
-        user_id: user.id,
-        local_id: localData.id,
+        user_id: userId,
+        local_id: localId,
       };
 
       if (editandoId) {
-        // 1. Actualizamos en la base de datos
         const { error } = await supabase.from("productos").update(productoAEnviar).eq("id", editandoId);
-
         if (error) throw error;
 
-        // 2. Borramos del Storage las imágenes que el usuario quitó
         if (imagenesAEliminar.length > 0) {
           const rutasAEliminar = imagenesAEliminar
             .map((url) => {
@@ -180,7 +149,6 @@ export function useAdminCatalog() {
 
           if (rutasAEliminar.length > 0) {
             const { error: errorStorage } = await supabase.storage.from("productos-imagenes").remove(rutasAEliminar);
-
             if (errorStorage) console.error("Error limpiando storage:", errorStorage);
           }
         }
@@ -192,7 +160,6 @@ export function useAdminCatalog() {
         toast.success("Producto creado correctamente");
       }
 
-      // LIMPIEZA FINAL
       setForm(ESTADO_INICIAL);
       setArchivosSeleccionados([]);
       setImagenesAEliminar([]);

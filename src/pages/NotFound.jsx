@@ -16,7 +16,7 @@ export default function NotFound() {
         {/* Botón para volver al inicio */}
         <Link
           to="/"
-          className="inline-flex items-center justify-center px-6 py-3 rounded-custom bg-accent hover:bg-accent-hover text-white font-semibold text-sm uppercase tracking-wider transition-colors cursor-pointer"
+          className="inline-flex items-center justify-center px-6 py-3 rounded-custom bg-accent hover:bg-accent-hover text-bg-custom font-semibold text-sm uppercase tracking-wider transition-colors cursor-pointer"
         >
           ← Volver al inicio
         </Link>

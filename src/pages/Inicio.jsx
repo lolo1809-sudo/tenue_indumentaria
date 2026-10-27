@@ -9,7 +9,7 @@ export default function Inicio({ productos, resenas, local }) {
   return (
     <>
       <Header />
-      <Hero />
+      <Hero local={local} />
       <ProductosDestacados productos={productos} />
       <Categorias />
       <Ubicacion local={local} />

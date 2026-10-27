@@ -68,6 +68,3 @@ export default function Footer({ local }) {
     </footer>
   );
 }
-
-
-

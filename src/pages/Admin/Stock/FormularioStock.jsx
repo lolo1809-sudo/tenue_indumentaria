@@ -1,7 +1,9 @@
-// Este archivo contiene exclusivamente el renderizado del formulario, recibiendo por props lo que necesita.
-import { CATEGORIAS } from "../../config";
+// Este archivo contiene exclusivamente el renderizado del formulario,
+// recibiendo por props lo que necesita.
 
-export default function AdminForm({
+import { CATEGORIAS } from "../../../config";
+
+export default function Formulario({
   form,
   editandoId,
   procesando,
